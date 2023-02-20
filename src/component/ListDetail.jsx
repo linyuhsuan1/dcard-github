@@ -7,30 +7,32 @@ const ListDetail = () => {
   const location = useLocation();
   const [detail, setDetail] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const [modify, setModify] = useState(false);
   const { repoOwner, repo, repoNumber } = location.state;
   useEffect(() => {
     getIssueDetail();
   }, [repoOwner, repo, repoNumber]);
-  const popupHandle = async () => {
-    console.log('close');
-    setShowMore(!showMore);
-    await getIssueDetail();
+  const issueEdit = async () => {
+    if (detail.length > 0) {
+      setModify(!modify);
+      setShowMore(!showMore);
+      await getIssueDetail();
+    }
+    return;
   };
 
   const getIssueDetail = async () => {
-    console.log('again');
     try {
       const response = await axios.get(
         GITHUB_REPO_ISSUE_URL + repoOwner + '&repo=' + repo + '&number=' + repoNumber,
       );
       console.log('get detail data', response.data);
-      setDetail((prevState) => ({ ...prevState, ...response.data }));
+      setDetail( response.data );
     } catch (error) {
       console.log(error);
     }
   };
-  const popupDelete = async () => {
-    console.log('delete');
+  const issueDelete = async () => {
     try {
       const response = await axios.patch(
         GITHUB_REPO_ISSUE_URL + repoOwner + '&repo=' + repo + '&number=' + repoNumber,
@@ -47,29 +49,43 @@ const ListDetail = () => {
         <div className='relative max-w-xl w-full'>
           <Link to='/'>Go Back</Link>
           <div className='bg-gray-100 p-4 rounded-lg relative justify-items-center items-start'>
-            <span className='text-gray-800 text-1xl font-semibold'>{detail.title}</span>
+            <div className='flex justify-between'>
+              <span className='text-gray-800 text-1xl font-semibold'>{detail.title}</span>
+              <div onClick={() => setModify(!modify)}>
+                <svg
+                  fill='#000000'
+                  width='20px'
+                  height='20px'
+                  viewBox='0 0 1920 1920'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+                  <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
+                  <g id='SVGRepo_iconCarrier'>
+                    <path
+                      d='M960 1468.235c93.448 0 169.412 75.965 169.412 169.412 0 93.448-75.964 169.412-169.412 169.412-93.448 0-169.412-75.964-169.412-169.412 0-93.447 75.964-169.412 169.412-169.412Zm0-677.647c93.448 0 169.412 75.964 169.412 169.412 0 93.448-75.964 169.412-169.412 169.412-93.448 0-169.412-75.964-169.412-169.412 0-93.448 75.964-169.412 169.412-169.412Zm0-677.647c93.448 0 169.412 75.964 169.412 169.412 0 93.447-75.964 169.412-169.412 169.412-93.448 0-169.412-75.965-169.412-169.412 0-93.448 75.964-169.412 169.412-169.412Z'
+                      fillRule='evenodd'
+                    ></path>
+                  </g>
+                </svg>
+              </div>
+            </div>
             <p className='mt-2 text-gray-600'>{detail.body}</p>
-            <div className='flex justify-end mt-4'>
-              <span
-                className='text-xl font-medium text-indigo-500'
-                onClick={() => setShowMore(!showMore)}
-              >
-                John Doe
-              </span>
-            </div>
           </div>
-          <div className='absolute top-[60px] right-0 bg-gray-200 w-[22.5%] shadow-lg rounded-md'>
-            <div className='flex items-center'>
-              <button className='my-2 ml-3' onClick={popupHandle}>
-                Edit
-              </button>
+          {modify ? (
+            <div className='absolute top-[65px] right-[14px] bg-gray-200 w-[26.5%] shadow-lg rounded-md'>
+              <div className='flex items-center'>
+                <button className='my-2 ml-3' onClick={issueEdit}>
+                  Edit
+                </button>
+              </div>
+              <div className='flex items-center'>
+                <button className='my-2 ml-3' onClick={issueDelete}>
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className='flex items-center'>
-              <button className='my-2 ml-3' onClick={popupDelete}>
-                Delete
-              </button>
-            </div>
-          </div>
+          ) : null}
         </div>
       </div>
       {showMore ? (
@@ -79,7 +95,7 @@ const ListDetail = () => {
           repoOwner={repoOwner}
           repo={repo}
           repoNumber={repoNumber}
-          popupHandle={popupHandle}
+          issueEdit={issueEdit}
         />
       ) : null}
     </>

@@ -45,7 +45,6 @@ const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLa
           <span>{trimIssueBody(issueBody)}</span>
         </div>
       </div>
-      <div className='border-[0.5px] border-solid border-slate-200'></div>
     </>
   );
 });

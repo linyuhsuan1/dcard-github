@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { GITHUB_REPO_ISSUE_URL } from '../constant/api';
 
-const EditForm = ({ detailTitle, detailBody, popupHandle, repoOwner, repo, repoNumber }) => {
+const EditForm = ({ detailTitle, detailBody, issueEdit, repoOwner, repo, repoNumber }) => {
   const [title, setTitle] = useState(detailTitle);
   const [body, setBody] = useState(detailBody);
   const handleTitleChange = (event) => {
@@ -25,7 +25,7 @@ const EditForm = ({ detailTitle, detailBody, popupHandle, repoOwner, repo, repoN
         data,
       );
       console.log('get patch finish data', response.data);
-      popupHandle();
+      issueEdit();
     } catch (error) {
       console.log(error);
     }
@@ -34,9 +34,9 @@ const EditForm = ({ detailTitle, detailBody, popupHandle, repoOwner, repo, repoN
   const modifyHandle = useCallback(
     (event) => {
       event.preventDefault();
-      if (title === '' || body.length !== 30) {
-        return;
-      }
+      // if (title === '' || body.length !== 30) {
+      //   return;
+      // }
       fetchData();
     },
     [fetchData],
@@ -46,7 +46,7 @@ const EditForm = ({ detailTitle, detailBody, popupHandle, repoOwner, repo, repoN
     <>
       <div className='fixed top-0 left-0 h-screen w-screen flex justify-center items-center'>
         <div className='bg-blue-800 p-4 rounded-lg relative justify-items-center items-start w-[60%]'>
-          <button className='text-[#07074D]' onClick={popupHandle}>
+          <button className='text-[#07074D]' onClick={issueEdit}>
             <svg
               width='10'
               height='10'
