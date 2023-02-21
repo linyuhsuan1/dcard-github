@@ -5,8 +5,8 @@ function App() {
   return (
     <div>
       <Router>
-        <Route exact path="/" component={ListContainer} />
-        <Route path="/list" component={ListDetail} />
+        <Route exact path="/dcard-github" component={ListContainer} />
+        <Route path="/dcard-github/list" component={ListDetail} />
       </Router>
     </div>
   );
