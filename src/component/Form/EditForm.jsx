@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react';
-import axios from 'axios';
-import { GITHUB_REPO_ISSUE_URL } from '../constant/api';
 
-const EditForm = ({ detailTitle, detailBody, issueEdit, repoOwner, repo, repoNumber }) => {
+const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }) => {
   const [title, setTitle] = useState(detailTitle);
   const [body, setBody] = useState(detailBody);
   const handleTitleChange = (event) => {
@@ -17,19 +15,6 @@ const EditForm = ({ detailTitle, detailBody, issueEdit, repoOwner, repo, repoNum
     body: body,
     authToken: localStorage.getItem('access_token'),
   };
-  const fetchData = useCallback(async () => {
-    console.log('patch data', data);
-    try {
-      const response = await axios.patch(
-        GITHUB_REPO_ISSUE_URL + repoOwner + '&repo=' + repo + '&number=' + repoNumber,
-        data,
-      );
-      console.log('get patch finish data', response.data);
-      issueEdit();
-    } catch (error) {
-      console.log(error);
-    }
-  }, [data, repoOwner, repo, repoNumber]);
 
   const modifyHandle = useCallback(
     (event) => {
@@ -37,16 +22,16 @@ const EditForm = ({ detailTitle, detailBody, issueEdit, repoOwner, repo, repoNum
       // if (title === '' || body.length !== 30) {
       //   return;
       // }
-      fetchData();
+      updateDate(data);
     },
-    [fetchData],
+    [data],
   );
 
   return (
     <>
       <div className='fixed top-0 left-0 h-screen w-screen flex justify-center items-center'>
         <div className='bg-blue-800 p-4 rounded-lg relative justify-items-center items-start w-[60%]'>
-          <button className='text-[#07074D]' onClick={issueEdit}>
+          <button className='text-[#07074D]' onClick={closeHandler}>
             <svg
               width='10'
               height='10'

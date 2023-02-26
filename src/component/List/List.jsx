@@ -5,10 +5,7 @@ const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLa
   const issueHandle = (issueNumber, issueUrl) => {
     const [, , repoOwner, repo] = issueUrl.replace('https://', '').split('/');
     console.log('split finish', repoOwner, repo);
-    history.push({
-      pathname: '/list',
-      state: { repoOwner: repoOwner, repo: repo, repoNumber: issueNumber },
-    });
+    history.push(`/dcard-github/${repoOwner}/${repo}/${issueNumber}`);
   };
 
   const handleClick = () => {
@@ -25,12 +22,12 @@ const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLa
   };
   return (
     <>
-      <div className='mt-2 mb-4' onClick={handleClick}>
+      <div className='my-4 cursor-pointer' onClick={handleClick}>
         {issueLabel && issueLabel.length !== 0 ? (
           issueLabel.map((item) => {
             return (
               <span
-                className='w-4 h-4 p-2 mb-1 mr-4 text-[0.5rem] text-white bg-blue-500 rounded-full'
+                className='w-4 h-4 p-2 mb-1 mr-4 text-[0.5rem] text-white bg-blue-dcard rounded-full'
                 key={item.id}
               >
                 {item.name}
@@ -45,6 +42,7 @@ const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLa
           <span>{trimIssueBody(issueBody)}</span>
         </div>
       </div>
+      <div className='border-b-2 border-white-400'></div>
     </>
   );
 });

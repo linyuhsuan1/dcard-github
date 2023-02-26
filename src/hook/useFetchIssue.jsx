@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
+import { GITHUB_SEARCH_URL } from '../constant/api';
 import axios from 'axios';
-import{GITHUB_SEARCH_URL} from '../constant/api';
 
-const useFetchIssue = (lastId) => {
+const useFetchIssue = (lastId, search, page) => {
   const [issueData, setIssueData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   useEffect(() => {
-    console.log('qqqqq')
     setLoading(true);
     const fetchData = async () => {
       try {
         if (lastId) {
-          console.log('has id')
           console.log('has lastId');
-          const response = await axios.get(GITHUB_SEARCH_URL + "linyuhsuan" + '&page=' + 2);
+          const response = await axios.get(GITHUB_SEARCH_URL + search + '&page=' + page);
           console.log(response.data.items);
           const filterItems = response.data.items.filter((item) => item.state !== 'closed');
           setIssueData((prevData) => [...prevData, ...filterItems]);
@@ -24,17 +22,18 @@ const useFetchIssue = (lastId) => {
           }
         } else {
           console.log('no lastId');
-          const response = await axios.get(GITHUB_SEARCH_URL + "linyuhsuan" + '&page=' + 1);
+          const response = await axios.get(GITHUB_SEARCH_URL + search + '&page=' + 1);
           const filterItems = response.data.items.filter((item) => item.state !== 'closed');
           setIssueData(filterItems);
           setLoading(false);
         }
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
     fetchData();
-  }, [lastId]);
+  }, [lastId, search]);
 
   return { loading, issueData, hasMore };
 };
