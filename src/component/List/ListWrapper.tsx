@@ -1,14 +1,15 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
-import List from '../List/List';
+import List from './List';
 import useFetchIssue from '../../hook/useFetchIssue';
+import { FetchIssueHook } from '../../hook/useFetchIssue';
 const ListWrapper = () => {
   const { search } = useParams();
   const [lastId, setLastId] = useState(null);
-  const observer = useRef(null);
+  const observer = useRef<IntersectionObserver>();
   const [page, setPage] = useState(1);
-  const { loading, issueData, hasMore } = useFetchIssue(lastId, search, page);
+  const { loading, issueData, hasMore }: FetchIssueHook = useFetchIssue(lastId, search, page);
 
   const lastIssueRef = useCallback(
     (node1) => {

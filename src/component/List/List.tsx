@@ -1,6 +1,20 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLabel }) => {
+
+interface IssueLabel {
+  id: number;
+  name: string;
+}
+
+interface ListProps {
+  issueTitle: string;
+  issueBody: string;
+  issueUrl: string;
+  issueNumber: number;
+  issueLabel: IssueLabel[];
+}
+
+const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLabel } : ListProps) => {
   const history = useHistory();
   const issueHandle = (issueNumber, issueUrl) => {
     const [, , repoOwner, repo] = issueUrl.replace('https://', '').split('/');

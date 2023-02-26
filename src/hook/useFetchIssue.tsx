@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react';
 import { GITHUB_SEARCH_URL } from '../constant/api';
 import axios from 'axios';
 
-const useFetchIssue = (lastId, search, page) => {
+export interface FetchIssueHook {
+	loading: boolean;
+	issueData: any[];
+	hasMore: boolean;
+}
+
+export default function useFetchIssue (lastId, search, page){
   const [issueData, setIssueData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -15,6 +21,7 @@ const useFetchIssue = (lastId, search, page) => {
           const response = await axios.get(GITHUB_SEARCH_URL + search + '&page=' + page);
           console.log(response.data.items);
           const filterItems = response.data.items.filter((item) => item.state !== 'closed');
+          // @ts-ignore
           setIssueData((prevData) => [...prevData, ...filterItems]);
           setLoading(false);
           if (response.data.items.length === 0) {
@@ -38,4 +45,3 @@ const useFetchIssue = (lastId, search, page) => {
   return { loading, issueData, hasMore };
 };
 
-export default useFetchIssue;

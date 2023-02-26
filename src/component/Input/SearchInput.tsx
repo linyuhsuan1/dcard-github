@@ -1,4 +1,7 @@
-const SearchInput = ({onChange}) => {
+interface SearchProps{
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+const SearchInput = ({onChange}:SearchProps) => {
     return (
         <>
         <input

@@ -1,15 +1,19 @@
 import { useState, useCallback } from 'react';
 
-const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }) => {
+interface EditFormProp{
+  detailTitle:string;
+  closeHandler:(event: React.MouseEvent<HTMLButtonElement>) => void;
+  detailBody:string;
+  updateDate:(event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }:EditFormProp) => {
   const [title, setTitle] = useState(detailTitle);
   const [body, setBody] = useState(detailBody);
-  const handleTitleChange = (event) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
-  const handleBodyChange = (event) => {
-    setBody(event.target.value);
-  };
+
   const data = {
     title: title,
     body: body,
@@ -17,12 +21,12 @@ const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }) => {
   };
 
   const modifyHandle = useCallback(
-    (event) => {
+    (event:React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       // if (title === '' || body.length !== 30) {
       //   return;
       // }
-      updateDate(data);
+      // updateDate(data);
     },
     [data],
   );
@@ -72,10 +76,8 @@ const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }) => {
               />
               <span className='my-3 block text-base font-medium text-[#ffffff]'>Body*:</span>
               <textarea
-                type='text'
                 placeholder='Please type Body'
                 value={body}
-                onChange={handleBodyChange}
                 className='w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md'
               />
             </div>

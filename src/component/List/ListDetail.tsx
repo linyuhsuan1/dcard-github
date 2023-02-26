@@ -1,12 +1,25 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import EditForm from '../Form/EditForm';
 import { GITHUB_REPO_ISSUE_URL } from '../../constant/api';
+
+interface RouteParams {
+  search: string;
+  repo: string;
+  number: string;
+}
+interface IssueDetail {
+  state: string;
+  html_url: string;
+  title: string;
+  body:string;
+}
 const ListDetail = () => {
-  const { search, repo, number } = useParams();
-  const [detail, setDetail] = useState([]);
+  const { search, repo, number } = useParams<RouteParams>();
+  const [detail, setDetail]= useState<IssueDetail>({ state: '', html_url: '', title: '',body:''});
   const [showMore, setShowMore] = useState(false);
+
   useEffect(() => {
     getIssueDetail();
   }, [search, repo, number]);
@@ -14,7 +27,7 @@ const ListDetail = () => {
     setShowMore(!showMore);
     await getIssueDetail();
   };
-  
+
   const getIssueDetail = async () => {
     try {
       const response = await axios.get(
@@ -47,7 +60,7 @@ const ListDetail = () => {
   const closeHandler = () => {
     setShowMore(!showMore);
   };
-  const updateDate = async (data) => {
+  const updateDate = async (data: object) => {
     console.log('patch data', data);
     try {
       const response = await axios.patch(
@@ -98,18 +111,18 @@ const ListDetail = () => {
             </a>
             <p className=' text-gray-700'>{detail.body}</p>
           </div>
-            <div className='absolute top-[40px] right-[14px] bg-gray-200 w-[26.5%] shadow-lg rounded-md hidden z-10 group-hover:block'>
-              <div className='flex items-center'>
-                <button className='my-2 ml-3' onClick={issueEdit}>
-                  Edit
-                </button>
-              </div>
-              <div className='flex items-center'>
-                <button className='my-2 ml-3' onClick={issueDelete}>
-                  Delete
-                </button>
-              </div>
+          <div className='absolute top-[40px] right-[14px] bg-gray-200 w-[26.5%] shadow-lg rounded-md hidden z-10 group-hover:block'>
+            <div className='flex items-center'>
+              <button className='my-2 ml-3' onClick={issueEdit}>
+                Edit
+              </button>
             </div>
+            <div className='flex items-center'>
+              <button className='my-2 ml-3' onClick={issueDelete}>
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       {showMore ? (

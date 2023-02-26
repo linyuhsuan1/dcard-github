@@ -26,12 +26,12 @@ const ListContainer = () => {
     );
   }
   //[點擊功能] 查詢 issues
-  const handleClick = (event) => {
+  const handleClick = (event:React.MouseEvent<HTMLButtonElement>) => {
     history.push(`/dcard-github/${search}`);
     event.preventDefault();
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
 
