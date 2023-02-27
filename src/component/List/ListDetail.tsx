@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import EditForm from '../Form/EditForm';
-import { GITHUB_REPO_ISSUE_URL } from '../../constant/api';
-
+import { apiGetRepoDetail, apiUpdateRepoDetail } from  '../../api/index';
 interface RouteParams {
   search: string;
   repo: string;
@@ -29,10 +27,8 @@ const ListDetail = () => {
   };
 
   const getIssueDetail = async () => {
-    try {
-      const response = await axios.get(
-        GITHUB_REPO_ISSUE_URL + search + '&repo=' + repo + '&number=' + number,
-      );
+    try {   
+      const response = await apiGetRepoDetail(search,repo,number);
       console.log('get detail data', response.data);
       setDetail(response.data);
     } catch (error) {
@@ -43,14 +39,10 @@ const ListDetail = () => {
     title: detail.title,
     body: detail.body,
     state: 'closed',
-    authToken: localStorage.getItem('access_token'),
   };
   const issueDelete = async () => {
     try {
-      const response = await axios.patch(
-        GITHUB_REPO_ISSUE_URL + search + '&repo=' + repo + '&number=' + number,
-        closeData,
-      );
+      const response = await apiUpdateRepoDetail(search,repo,number,JSON.stringify(closeData));
       console.log('get delete finish data', response.data);
       setDetail(response.data);
     } catch (error) {
@@ -63,10 +55,7 @@ const ListDetail = () => {
   const updateDate = async (data: object) => {
     console.log('patch data', data);
     try {
-      const response = await axios.patch(
-        GITHUB_REPO_ISSUE_URL + search + '&repo=' + repo + '&number=' + number,
-        data,
-      );
+      const response = await apiUpdateRepoDetail(search,repo,number,JSON.stringify(data));
       console.log('get patch finish data', response.data);
       setDetail(response.data);
       closeHandler();

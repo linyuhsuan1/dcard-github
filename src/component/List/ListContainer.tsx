@@ -2,22 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import SearchInput from '../Input/SearchInput';
 import SButton from '../Button/SButton';
-import axios from 'axios';
+import config from '../../constant/config';
+import { apiGetAuth } from '../../api/index';
 const ListContainer = () => {
   const history = useHistory();
   const [search, setSearch] = useState('');
+  const query = new URLSearchParams(window.location.search);
+  const token = query.get('code');
   useEffect(() => {
-    console.log('useEffect');
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get('code');
-    if (token && localStorage.getItem('accessToken') === null) {
-      axios.get('http://localhost:3001/getAccessToken?code=' + token).then((result) => {
-        if (result.data.access_token) {
+    getAccessToken();
+  }, []);
+  const getAccessToken = async () => { 
+    try{
+      if(token && localStorage.getItem('accessToken') === null){
+        const result = await apiGetAuth(token,config.CLIENT_ID,config.CLIENT_SECRET);
+        if(result.data.access_token){
           localStorage.setItem('access_token', result.data.access_token);
         }
-      });
+      }
+    }catch(error){
+      console.log(error);
     }
-  }, []);
+  };
   // 設定github api scope
   const scopes = ['user', 'repo'];
   function loginGithub() {

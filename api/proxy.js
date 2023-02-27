@@ -11,16 +11,11 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'));
 
-const CLIENT_ID = '1af846cd38b372da682e';
-const CLIENT_SECRET = 'a6e1835a7133dfec59858d01adf379d9bf478e85&code';
-
 app.get('/', (req) => {
-  console.log('qqqq', req);
   req.send('Mavenlink connector');
 });
 
 app.get('/oauth', async (req, res) => {
-  console.log('aaaa', req);
   try {
     const data = await axios.post('https://github.com/login/oauth/authorize');
     return res.json(data.data);
@@ -31,10 +26,11 @@ app.get('/oauth', async (req, res) => {
 });
 
 app.get('/getAccessToken', async (req, res) => {
-  console.log('aaaa', req.query.code);
+  const token = req.query.token;
+  const client_id = req.query.client_id;
+  const client_secret = req.query.client_secret;
   try {
-    const param =
-      '?client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '&code=' + req.query.code;
+    const param = '?client_id=' + client_id + '&client_secret=' + client_secret + '&code=' + token;
     const data = await axios.get('https://github.com/login/oauth/access_token' + param, {
       headers: {
         Accept: 'application/json',
@@ -46,7 +42,6 @@ app.get('/getAccessToken', async (req, res) => {
   }
 });
 app.get('/repos', async (req, res) => {
-  console.log('gettttt orgs', req.query);
   try {
     const owner = req.query.owner;
     const repo = req.query.repo;
@@ -55,7 +50,7 @@ app.get('/repos', async (req, res) => {
       'https://api.github.com/repos/' + owner + '/' + repo + '/issues/' + number,
       {
         headers: {
-          // "Authorization": param,
+          Authorization: 'Bearer ' + req.headers['authorization'],
           Accept: 'application/json',
         },
       },
@@ -66,20 +61,17 @@ app.get('/repos', async (req, res) => {
   }
 });
 app.patch('/repos', async (req, res) => {
-  console.log('gettttt  patch orgs', req.query);
   try {
-    const owner = req.query.owner;
-    const repo = req.query.repo;
-    const number = req.query.number;
-    const newData = req.body;
-    console.log('ssssss', newData);
-    console.log('dddddddddd', req.body.authToken);
+    const owner = req.body.query.owner;
+    const repo = req.body.query.repo;
+    const number = req.body.query.number;
+    const newData = req.body.data;
     const data = await axios.patch(
       'https://api.github.com/repos/' + owner + '/' + repo + '/issues/' + number,
       newData,
       {
         headers: {
-          Authorization: 'Bearer ' + req.body.authToken,
+          Authorization: 'Bearer ' + req.headers['authorization'],
           Accept: 'application/json',
         },
       },
@@ -106,6 +98,7 @@ app.get('/search', async (req, res) => {
         order,
       {
         headers: {
+          Authorization: 'Bearer ' + req.headers['authorization'],
           Accept: 'application/json',
         },
       },

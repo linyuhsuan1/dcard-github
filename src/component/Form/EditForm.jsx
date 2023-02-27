@@ -1,32 +1,30 @@
 import { useState, useCallback } from 'react';
 
-interface EditFormProp{
-  detailTitle:string;
-  closeHandler:(event: React.MouseEvent<HTMLButtonElement>) => void;
-  detailBody:string;
-  updateDate:(event: React.MouseEvent<HTMLButtonElement>) => void;
-}
-const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }:EditFormProp) => {
+// interface EditFormProp{
+//   detailTitle:string;
+//   closeHandler:(event: React.MouseEvent<HTMLButtonElement>) => void;
+//   detailBody:string;
+//   updateDate:(event: React.MouseEvent<HTMLButtonElement>) => void;
+// }
+const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }) => {
   const [title, setTitle] = useState(detailTitle);
   const [body, setBody] = useState(detailBody);
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
-
 
   const data = {
     title: title,
     body: body,
-    authToken: localStorage.getItem('access_token'),
   };
 
   const modifyHandle = useCallback(
-    (event:React.MouseEvent<HTMLButtonElement>) => {
+    (event) => {
       event.preventDefault();
       // if (title === '' || body.length !== 30) {
       //   return;
       // }
-      // updateDate(data);
+      updateDate(data);
     },
     [data],
   );
@@ -75,11 +73,11 @@ const EditForm = ({ detailTitle, closeHandler, detailBody, updateDate }:EditForm
                 className='w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md'
               />
               <span className='my-3 block text-base font-medium text-[#ffffff]'>Body*:</span>
-              <textarea
+              {/* <textarea
                 placeholder='Please type Body'
                 value={body}
                 className='w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md'
-              />
+              /> */}
             </div>
             <div>
               <button

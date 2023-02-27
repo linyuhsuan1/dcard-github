@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GITHUB_SEARCH_URL } from '../constant/api';
-import axios from 'axios';
+import {apiGetAllList} from '../api/index';
 
 export interface FetchIssueHook {
 	loading: boolean;
@@ -8,7 +7,7 @@ export interface FetchIssueHook {
 	hasMore: boolean;
 }
 
-export default function useFetchIssue (lastId, search, page){
+export default function useFetchIssue (lastId: string|null, search: string, page: number){
   const [issueData, setIssueData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -18,9 +17,9 @@ export default function useFetchIssue (lastId, search, page){
       try {
         if (lastId) {
           console.log('has lastId');
-          const response = await axios.get(GITHUB_SEARCH_URL + search + '&page=' + page);
+          const response = await apiGetAllList(search,page);
           console.log(response.data.items);
-          const filterItems = response.data.items.filter((item) => item.state !== 'closed');
+          const filterItems = response.data.items.filter((item: { state: string; }) => item.state !== 'closed');
           // @ts-ignore
           setIssueData((prevData) => [...prevData, ...filterItems]);
           setLoading(false);
@@ -29,8 +28,9 @@ export default function useFetchIssue (lastId, search, page){
           }
         } else {
           console.log('no lastId');
-          const response = await axios.get(GITHUB_SEARCH_URL + search + '&page=' + 1);
-          const filterItems = response.data.items.filter((item) => item.state !== 'closed');
+          console.log('get first',search)
+          const response = await apiGetAllList(search,1);
+          const filterItems = response.data.items.filter((item: { state: string; }) => item.state !== 'closed');
           setIssueData(filterItems);
           setLoading(false);
         }

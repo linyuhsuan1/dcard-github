@@ -16,7 +16,7 @@ interface ListProps {
 
 const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLabel } : ListProps) => {
   const history = useHistory();
-  const issueHandle = (issueNumber, issueUrl) => {
+  const issueHandle = (issueNumber:number, issueUrl:string) => {
     const [, , repoOwner, repo] = issueUrl.replace('https://', '').split('/');
     console.log('split finish', repoOwner, repo);
     history.push(`/dcard-github/${repoOwner}/${repo}/${issueNumber}`);
@@ -25,7 +25,7 @@ const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLa
   const handleClick = () => {
     issueHandle(issueNumber, issueUrl);
   };
-  const trimIssueBody = (issueContent) => {
+  const trimIssueBody = (issueContent:string) => {
     if (issueContent) {
       if (issueContent.length <= 50) {
         return issueContent;
