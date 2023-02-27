@@ -1,16 +1,12 @@
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import NavBar from './component/NavBar/NavBar';
-import ListContainer from './component/List/ListContainer';
-import ListDetail from './component/List/ListDetail';
-import ListWrapper from './component/List/ListWrapper';
+import PageRoute from './Router/PageRoute';
 function App() {
   return (
     <div>
       <Router>
         <NavBar />
-        <Route exact path='/dcard-github/' component={ListContainer} />
-        <Route exact path='/dcard-github/:search' component={ListWrapper} />
-        <Route path='/dcard-github/:search/:repo/:number' component={ListDetail} />
+        <PageRoute/>
       </Router>
     </div>
   );

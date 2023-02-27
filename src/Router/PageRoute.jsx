@@ -1,16 +1,15 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import ListContainer from '../component/List/ListContainer';
-// import ListDetail from '../component/List/ListDetail';
+import ListDetail from '../component/List/ListDetail';
+import ListWrapper from '../component/List/ListWrapper';
 
 const PageRoute = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route  path='/dcard-github' component={ListContainer} />
-        {/* <Route exact path='/dcard-github/list' component={ListDetail} /> */}
-      </Routes>
-    </BrowserRouter>
+    <Switch>
+      <Route exact path='/dcard-github/' component={ListContainer} />
+      <Route exact path='/dcard-github/:search' component={ListWrapper} />
+      <Route path='/dcard-github/:search/:repo/:number' component={ListDetail} />
+    </Switch>
   );
 };
 
