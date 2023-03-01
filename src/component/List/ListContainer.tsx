@@ -35,6 +35,13 @@ const ListContainer = () => {
     setSearch(event.target.value);
   };
 
+  // 設定github api scope
+  const scopes = ['user', 'repo'];
+  function loginGithub() {
+    window.location.assign(
+      'https://github.com/login/oauth/authorize?client_id=1af846cd38b372da682e&scope=' + scopes,
+    );
+  }
   return (
     <>
       <div className="flex justify-center items-center mt-10">
@@ -45,6 +52,7 @@ const ListContainer = () => {
           </div>
         </div>
       </div>
+      <button onClick={loginGithub}>Login github accesstoken</button>
     </>
   );
 };
