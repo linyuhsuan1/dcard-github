@@ -6,7 +6,7 @@ const SearchInput = ({onChange}:SearchProps) => {
         <>
         <input
             type='text'
-            className='w-1/2 rounded-lg border border-gray-400 p-2'
+            className='w-full rounded-lg border border-gray-400 p-2'
             onChange={onChange}
             placeholder='Search'
         />

@@ -83,19 +83,17 @@ app.patch('/repos', async (req, res) => {
 });
 
 app.get('/search', async (req, res) => {
-  console.log('gettttt search data', req.query);
   try {
     const param = req.query.user;
     const page = req.query.page;
-    const order = req.query.order;
     const data = await axios.get(
-      'https://api.github.com/search/issues?q=user:' +
+      'https://api.github.com/search/issues?q=is:issue+user:' +
         param +
-        '&per_page=4' +
+        '+state:open' +
+        '&per_page=10' +
         '&page=' +
         page +
-        '&order=' +
-        order,
+        '&order=desc',
       {
         headers: {
           Authorization: 'Bearer ' + req.headers['authorization'],

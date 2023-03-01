@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams , useHistory } from 'react-router-dom';
 import EditForm from '../Form/EditForm';
 import { apiGetRepoDetail, apiUpdateRepoDetail } from  '../../api/index';
+import LoadingView from '../../layout/LoadingView';
 interface RouteParams {
   search: string;
   repo: string;
@@ -15,24 +16,31 @@ interface IssueDetail {
 }
 const ListDetail = () => {
   const { search, repo, number } = useParams<RouteParams>();
+  const history = useHistory();
   const [detail, setDetail]= useState<IssueDetail>({ state: '', html_url: '', title: '',body:''});
   const [showMore, setShowMore] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getIssueDetail();
   }, [search, repo, number]);
+
   const issueEdit = async () => {
     setShowMore(!showMore);
-    await getIssueDetail();
+    setIsOpen(!isOpen);
   };
 
   const getIssueDetail = async () => {
+    setIsLoading(true);
     try {   
       const response = await apiGetRepoDetail(search,repo,number);
       console.log('get detail data', response.data);
       setDetail(response.data);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   const closeData = {
@@ -41,10 +49,11 @@ const ListDetail = () => {
     state: 'closed',
   };
   const issueDelete = async () => {
+    setIsOpen(!isOpen);
     try {
       const response = await apiUpdateRepoDetail(search,repo,number,JSON.stringify(closeData));
       console.log('get delete finish data', response.data);
-      setDetail(response.data);
+      history.push('/dcard-github/')
     } catch (error) {
       console.log(error);
     }
@@ -52,11 +61,9 @@ const ListDetail = () => {
   const closeHandler = () => {
     setShowMore(!showMore);
   };
-  const updateDate = async (data: object) => {
-    console.log('patch data', data);
+  const updateData = async (data: object) => {
     try {
       const response = await apiUpdateRepoDetail(search,repo,number,JSON.stringify(data));
-      console.log('get patch finish data', response.data);
       setDetail(response.data);
       closeHandler();
     } catch (error) {
@@ -66,15 +73,16 @@ const ListDetail = () => {
 
   return (
     <>
-      <div className='flex h-screen justify-center mt-10 group'>
+      <div className='flex h-screen justify-center mt-10'>
         <div className='relative max-w-xl w-full'>
-          <div className='bg-gray-100 p-4 rounded-lg relative justify-items-center items-start break-all'>
+        <div className='bg-gray-100 p-4 rounded-lg relative justify-items-center items-start break-all'>
+        {isLoading ? <LoadingView /> :  
+          <>
             <div className='flex justify-between'>
               <span className='text-xs text-gray-500 font-medium hover:text-blue-dcard cursor-pointer '>
                 {search}/{repo} #{number}
               </span>
-              <span>{detail.state}</span>
-              <div className='relative inline-block group '>
+              <div className='relative inline-block' onClick={()=> setIsOpen(!isOpen)}>
                 <svg
                   fill='#000000'
                   width='20px'
@@ -99,19 +107,25 @@ const ListDetail = () => {
               </span>
             </a>
             <p className=' text-gray-700'>{detail.body}</p>
-          </div>
-          <div className='absolute top-[40px] right-[14px] bg-gray-200 w-[26.5%] shadow-lg rounded-md hidden z-10 group-hover:block'>
-            <div className='flex items-center'>
-              <button className='my-2 ml-3' onClick={issueEdit}>
-                Edit
-              </button>
+          </>
+        } 
+        </div>
+        {
+          isOpen? <>
+            <div className='absolute top-[40px] right-[14px] bg-gray-200 w-[26.5%] shadow-lg rounded-md  z-10'>
+              <div className='flex items-center'>
+                <button className='my-2 ml-3' onClick={issueEdit}>
+                  Edit
+                </button>
+              </div>
+              <div className='flex items-center'>
+                <button className='my-2 ml-3' onClick={issueDelete}>
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className='flex items-center'>
-              <button className='my-2 ml-3' onClick={issueDelete}>
-                Delete
-              </button>
-            </div>
-          </div>
+          </>:null
+        }
         </div>
       </div>
       {showMore ? (
@@ -119,7 +133,7 @@ const ListDetail = () => {
           detailTitle={detail.title}
           detailBody={detail.body}
           closeHandler={closeHandler}
-          updateDate={updateDate}
+          updateData={updateData}
         />
       ) : null}
     </>

@@ -4,6 +4,7 @@ import { FixedSizeList } from 'react-window';
 import List from './List';
 import useFetchIssue from '../../hook/useFetchIssue';
 import { FetchIssueHook } from '../../hook/useFetchIssue';
+import MsgView from '../../layout/MsgView';
 
 const ListWrapper = () => {
   const { search } = useParams<string>();
@@ -13,37 +14,35 @@ const ListWrapper = () => {
   const { loading, issueData, hasMore }: FetchIssueHook = useFetchIssue(lastId, String(search), page);
 
   const lastIssueRef = useCallback(
-    (node1:any) => {
+    (node:any) => {
       if (loading) {
         return;
       }
-      console.log('get node', node1);
       if (observer.current) {
         observer.current.disconnect();
       }
       observer.current = new IntersectionObserver(([entries]) => {
         if (entries.isIntersecting && hasMore && !loading) {
           console.log('isIntersecting true');
-          setLastId(node1.dataset.id);
+          setLastId(node.dataset.id);
           setPage(page + 1);
         }
       });
-      if (node1) observer.current.observe(node1);
+      if (node) observer.current.observe(node);
     },
     [hasMore, loading],
   );
   return (
     <>
       <div className='py-10  flex items-center justify-center'>
-        <div className='mx-40'>
-          {issueData.length > 0 ? (
-            <>
+      {issueData.length > 0 ? (
+        <div className='mx-40'>     
               <div className='bg-gray-100 shadow-lg rounded-lg p-4'>
                 <FixedSizeList
-                  height={window.innerHeight}
+                  height={150}
                   width={650}
                   itemCount={issueData.length}
-                  itemSize={100}
+                  itemSize={120}
                   itemData={issueData}
                 >
                   {({ index, style }) => {
@@ -96,9 +95,9 @@ const ListWrapper = () => {
                   </div>
                 ) : null}
               </div>
-            </>
-          ) : null}
         </div>
+      ) : null }
+      { (!loading && issueData.length === 0) ? <MsgView msg='no open issue'/> : null}
       </div>
     </>
   );

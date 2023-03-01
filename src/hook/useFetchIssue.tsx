@@ -19,19 +19,17 @@ export default function useFetchIssue (lastId: string|null, search: string, page
           console.log('has lastId');
           const response = await apiGetAllList(search,page);
           console.log(response.data.items);
-          const filterItems = response.data.items.filter((item: { state: string; }) => item.state !== 'closed');
           // @ts-ignore
-          setIssueData((prevData) => [...prevData, ...filterItems]);
+          setIssueData((prevData) => [...prevData, ...response.data.items]);
           setLoading(false);
           if (response.data.items.length === 0) {
             setHasMore(false);
           }
         } else {
           console.log('no lastId');
-          console.log('get first',search)
           const response = await apiGetAllList(search,1);
-          const filterItems = response.data.items.filter((item: { state: string; }) => item.state !== 'closed');
-          setIssueData(filterItems);
+          console.log('get response',response)
+          setIssueData(response.data.items);
           setLoading(false);
         }
       } catch (error) {

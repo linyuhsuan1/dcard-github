@@ -48,9 +48,7 @@ const List = React.memo(({ issueTitle, issueBody, issueUrl, issueNumber, issueLa
               </span>
             );
           })
-        ) : (
-          <></>
-        )}
+        ) : null}
         <div>
           <h1 className='text-gray-800 text-1xl font-semibold mt-1'>{issueTitle}</h1>
           <span>{trimIssueBody(issueBody)}</span>
