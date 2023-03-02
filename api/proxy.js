@@ -10,6 +10,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'));
+app.use((req, res, next) => {
+  // 允許任意來源訪問該伺服器端資源
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // 允許的請求方法
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  // 允許的請求標頭
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 
 app.get('/', (req) => {
   req.send('Mavenlink connector');
