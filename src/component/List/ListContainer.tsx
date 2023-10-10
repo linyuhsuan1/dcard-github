@@ -46,16 +46,13 @@ const ListContainer = () => {
     client_secret: string
   ): Promise<User[] | undefined> {
     try {
-      const response: AxiosResponse<User[]> = await axios.get(
-        "https://github.com/login/oauth/access_token",
-        {
-          params: {
-            code: code,
-            client_id: client_id,
-            client_secret: client_secret,
-          },
-        }
-      );
+      const response: AxiosResponse<User[]> = await axios.get("/access_token", {
+        params: {
+          code: code,
+          client_id: client_id,
+          client_secret: client_secret,
+        },
+      });
 
       return response.data;
     } catch (error) {
