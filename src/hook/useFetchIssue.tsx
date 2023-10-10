@@ -33,7 +33,7 @@ export default function useFetchIssue (lastId: string|null, search: string, page
           setLoading(false);
         }
       } catch (error) {
-        console.log(error);
+        console.log('get error',error);
         setLoading(false);
       }
     };

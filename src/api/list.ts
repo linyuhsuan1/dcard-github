@@ -19,6 +19,11 @@ listReqest.interceptors.request.use(
 // 攔截 API response 的回傳
 listReqest.interceptors.response.use(
   (response) => {
+    if(response.data.hasOwnProperty('status')){
+      if(response.data.status !=='200'){
+        return Promise.reject(response.data);
+      }
+    }
     return Promise.resolve(response);
   },
   (error) => {
