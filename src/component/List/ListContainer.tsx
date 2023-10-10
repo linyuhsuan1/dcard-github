@@ -21,8 +21,8 @@ const ListContainer = () => {
     try {
       const result = await getUsers(
         token,
-        config.CLIENT_ID
-        // config.CLIENT_SECRET
+        config.CLIENT_ID,
+        config.CLIENT_SECRET
       );
       console.log("aaaa", result);
       // if (result.data.access_token) {
@@ -38,17 +38,23 @@ const ListContainer = () => {
     access_token: string;
     scope: boolean;
     token_type: string;
-    rrrr: boolean;
   };
 
   async function getUsers(
-    token: string,
-    client_id: string
+    code: string,
+    client_id: string,
+    client_secret: string
   ): Promise<User[] | undefined> {
     try {
       const response: AxiosResponse<User[]> = await axios.get(
         "https://github.com/login/oauth/access_token",
-        { params: { token: token, client_id: client_id } }
+        {
+          params: {
+            code: code,
+            client_id: client_id,
+            client_secret: client_secret,
+          },
+        }
       );
 
       return response.data;
